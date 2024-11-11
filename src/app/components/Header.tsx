@@ -20,7 +20,7 @@ const Cabecalho = () => (
           <Link href="/controle-painel" className="text-lg text-white hover:text-green-300 transition-all duration-300">Controle do Painel</Link>
         </li>
         <li>
-          <Link href="/monitoring" className="text-lg text-white hover:text-green-300 transition-all duration-300">Monitoramento</Link>
+          <Link href="/monitoramento" className="text-lg text-white hover:text-green-300 transition-all duration-300">Monitoramento</Link>
         </li>
       </ul>
     </nav>
