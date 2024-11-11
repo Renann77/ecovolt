@@ -15,8 +15,8 @@ const financialData = [
         monthlyRevenue: 300 * 0.5,
         investmentTime: 5,
         payback: 3.5,
-        storageCapacity: 500, // Capacidade de armazenamento em kWh
-        imageUrl: "/img/ongrid.jpg", // Caminho ajustado para a imagem
+        storageCapacity: 500,
+        imageUrl: "/img/ongrid.jpg",
     },
     {
         type: "On Grid",
@@ -42,9 +42,22 @@ const financialData = [
 
 export default function FinancialPage() {
     const [selectedPanel, setSelectedPanel] = useState(financialData[0]);
+    const [monthlyConsumption, setMonthlyConsumption] = useState(0);
+    const [estimatedSavings, setEstimatedSavings] = useState<number | null>(null);
 
     const handlePanelSelection = (panel: typeof financialData[0]) => {
         setSelectedPanel(panel);
+    };
+
+    const handleConsumptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Number(e.target.value);
+        setMonthlyConsumption(value);
+        calculateSavings(value);
+    };
+
+    const calculateSavings = (consumption: number) => {
+        const savings = consumption * 0.5; // Exemplo de economia mensal com base no consumo
+        setEstimatedSavings(savings);
     };
 
     return (
@@ -125,6 +138,38 @@ export default function FinancialPage() {
                         </div>
                     </div>
                 )}
+
+                {/* Simulação de Economia */}
+                <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-12">
+                    <h2 className="text-3xl font-semibold text-teal-700 mb-6 text-center">Simulador de Economia</h2>
+                    <p className="text-center text-gray-600 mb-4">
+                        Insira seu consumo mensal de energia para estimar a economia que você pode obter com um painel solar.
+                    </p>
+                    <div className="flex justify-center items-center gap-4">
+                        <input
+                            type="number"
+                            placeholder="Consumo mensal em kWh"
+                            value={monthlyConsumption}
+                            onChange={handleConsumptionChange}
+                            className="p-2 border rounded-lg text-gray-700 text-center"
+                        />
+                        {estimatedSavings !== null && (
+                            <div className="text-lg text-gray-700">
+                                Economia estimada: R${estimatedSavings.toFixed(2)} por mês
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Informações sobre Incentivos e Subsídios */}
+                <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-12">
+                    <h2 className="text-3xl font-semibold text-teal-700 mb-6 text-center">Incentivos e Subsídios</h2>
+                    <p className="text-gray-700">
+                        Saiba mais sobre incentivos e subsídios disponíveis para a instalação de sistemas de energia solar. Muitos governos oferecem benefícios fiscais, financiamento facilitado e outros incentivos para promover a utilização de energia limpa.
+                        <br />
+                        Verifique os programas específicos de sua região e aproveite os benefícios disponíveis para reduzir os custos de instalação e acelerar o retorno do investimento.
+                    </p>
+                </div>
             </div>
             <Footer />
         </>
