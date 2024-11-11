@@ -2,12 +2,16 @@
 import { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import Cabecalho from '../components/Header';
 import Footer from '../components/Footer';
+import jsPDF from 'jspdf';
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 // URLs das imagens de fundo
-// Assegure-se de que estas imagens estejam no diretório correto na pasta `public/img`.
-const sunnyBackground = "url('/img/fundoclima4.webp')')";
+const sunnyBackground = "url('/img/fundoclima4.webp')";
 const rainyBackground = "url('/img/climafundo2.webp')";
-const clearBackground = "url('/img/climafundo1.webp')"; // Adicione uma imagem para clima limpo
+const clearBackground = "url('/img/climafundo1.webp')";
 
 const api = {
     key: "64ed82577ced7f69cb1687f0ce536131",
@@ -18,34 +22,27 @@ const api = {
 
 interface WeatherData {
     name: string;
-    sys: {
-        country: string;
-    };
-    main: {
-        temp: number;
-        temp_min: number;
-        temp_max: number;
-    };
-    weather: {
-        description: string;
-        icon: string;
-    }[];
-    clouds: {
-        all: number;
-    };
+    sys: { country: string };
+    main: { temp: number; temp_min: number; temp_max: number };
+    weather: { description: string; icon: string }[];
+    clouds: { all: number };
+}
+
+interface ForecastData {
+    dt_txt: string;
+    main: { temp: number };
+    clouds: { all: number };
+    weather: { description: string; icon: string }[];
 }
 
 export default function WeatherApp() {
     const [city, setCity] = useState<string>("");
-    const [date, setDate] = useState<string>("");
     const [temperature, setTemperature] = useState<number>(0);
-    const [tempUnit, setTempUnit] = useState<string>("°C");
     const [weatherDescription, setWeatherDescription] = useState<string>("");
-    const [lowHigh, setLowHigh] = useState<string>("");
-    const [icon, setIcon] = useState<string>("");
-    const [search, setSearch] = useState<string>("");
-    const [error, setError] = useState<string | null>(null);
     const [energyGenerated, setEnergyGenerated] = useState<number>(0);
+    const [co2Savings, setCo2Savings] = useState<string>("");
+    const [weeklyForecast, setWeeklyForecast] = useState<{ day: string; energy: number }[]>([]);
+    const [search, setSearch] = useState<string>("");
 
     useEffect(() => {
         if (navigator.geolocation) {
@@ -71,91 +68,80 @@ export default function WeatherApp() {
             if (!response.ok) throw new Error(`Erro HTTP: status ${response.status}`);
             const data: WeatherData = await response.json();
             displayResults(data);
-            setError(null);
+            fetchWeeklyForecast(lat, long);
         } catch (error: any) {
             alert(error.message);
-            setError("Não foi possível carregar os dados do clima.");
         }
     };
 
-    const searchResults = async (city: string) => {
+    const fetchWeeklyForecast = async (lat: number, long: number) => {
         try {
-            const response = await fetch(`${api.base}weather?q=${city}&lang=${api.lang}&units=${api.units}&APPID=${api.key}`);
-            if (!response.ok) throw new Error(`Erro HTTP: status ${response.status}`);
-            const data: WeatherData = await response.json();
-            displayResults(data);
-            setError(null);
+            const response = await fetch(`${api.base}forecast?lat=${lat}&lon=${long}&lang=${api.lang}&units=${api.units}&APPID=${api.key}`);
+            const forecastData = await response.json();
+            processWeeklyForecast(forecastData.list);
         } catch (error: any) {
-            alert(error.message);
-            setError("Não foi possível carregar os dados do clima.");
+            console.error("Erro ao buscar previsão semanal:", error);
         }
+    };
+
+    const processWeeklyForecast = (forecast: ForecastData[]) => {
+        const dailyEnergy: { [key: string]: number[] } = {};
+        forecast.forEach((item) => {
+            const date = new Date(item.dt_txt).toLocaleDateString('pt-BR', { weekday: 'short' });
+            const energy = calculateDailyEnergy(item.main.temp, item.clouds.all);
+
+            if (dailyEnergy[date]) {
+                dailyEnergy[date].push(energy);
+            } else {
+                dailyEnergy[date] = [energy];
+            }
+        });
+
+        const weeklyData = Object.keys(dailyEnergy).map((day) => ({
+            day,
+            energy: parseFloat((dailyEnergy[day].reduce((a, b) => a + b) / dailyEnergy[day].length).toFixed(2)),
+        }));
+        setWeeklyForecast(weeklyData);
+    };
+
+    const calculateDailyEnergy = (temperature: number, cloudiness: number) => {
+        const sunlightIntensity = Math.max(0, (100 - cloudiness) / 100);
+        const baseProduction = 5;
+        const temperatureFactor = temperature > 20 ? 1.2 : 0.8;
+        return baseProduction * sunlightIntensity * temperatureFactor;
     };
 
     const displayResults = (weather: WeatherData) => {
         setCity(`${weather.name}, ${weather.sys.country}`);
-        setDate(dateBuilder(new Date()));
-
-        const iconName = weather.weather[0].icon;
-        setIcon(iconName);
-
         setTemperature(Math.round(weather.main.temp));
-        setTempUnit("°C");
-
-        const weatherDesc = capitalizeFirstLetter(weather.weather[0].description);
+        const weatherDesc = weather.weather[0].description;
         setWeatherDescription(weatherDesc);
+        const dailyEnergy = calculateDailyEnergy(weather.main.temp, weather.clouds.all);
+        setEnergyGenerated(dailyEnergy);
 
-        setLowHigh(`${Math.round(weather.main.temp_min)}°C / ${Math.round(weather.main.temp_max)}°C`);
-
-        calculateEnergyGenerated(weather.main.temp, weather.clouds.all);
+        // Calcula economia de CO₂
+        const co2PerKWh = 0.5;
+        const co2SavingsValue = (dailyEnergy * co2PerKWh).toFixed(2);
+        setCo2Savings(co2SavingsValue);
     };
 
-    const dateBuilder = (d: Date): string => {
-        const days = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-        const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    const generatePDF = () => {
+        const doc = new jsPDF();
+        doc.setFontSize(20);
+        doc.text("Relatório Climático e de Energia", 10, 10);
 
-        const day = days[d.getDay()];
-        const date = d.getDate();
-        const month = months[d.getMonth()];
-        const year = d.getFullYear();
+        doc.setFontSize(12);
+        doc.text(`Cidade: ${city}`, 10, 30);
+        doc.text(`Temperatura Atual: ${temperature}°C`, 10, 40);
+        doc.text(`Descrição do Clima: ${weatherDescription}`, 10, 50);
+        doc.text(`Energia Gerada: ${energyGenerated} kWh`, 10, 60);
+        doc.text(`Economia de CO₂: ${co2Savings} kg`, 10, 70);
 
-        return `${day}, ${date} ${month} ${year}`;
-    };
+        weeklyForecast.forEach((day, index) => {
+            doc.text(`${day.day}: ${day.energy} kWh`, 10, 80 + index * 10);
+        });
 
-    const capitalizeFirstLetter = (string: string): string => {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    };
-
-    const changeTemp = () => {
-        if (tempUnit === "°C") {
-            const f = (temperature * 1.8) + 32;
-            setTempUnit("°F");
-            setTemperature(Math.round(f));
-        } else {
-            const c = (temperature - 32) / 1.8;
-            setTempUnit("°C");
-            setTemperature(Math.round(c));
-        }
-    };
-
-    const calculateEnergyGenerated = (temperature: number, cloudiness: number) => {
-        const sunlightIntensity = Math.max(0, (100 - cloudiness) / 100);
-        const baseProduction = 5; 
-        const temperatureFactor = temperature > 20 ? 1.2 : 0.8; 
-
-        const energy = baseProduction * sunlightIntensity * temperatureFactor;
-        setEnergyGenerated(parseFloat(energy.toFixed(2)));
-    };
-
-    const handleSearch = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (search) {
-            searchResults(search);
-            setSearch("");
-        }
-    };
-
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
+        doc.save("Relatorio_Clima_Energia_Semanal.pdf");
     };
 
     // Determina o fundo com base na descrição do clima
@@ -165,12 +151,23 @@ export default function WeatherApp() {
         ? clearBackground
         : sunnyBackground;
 
+    const data = {
+        labels: weeklyForecast.map(item => item.day),
+        datasets: [
+            {
+                label: 'Energia Gerada (kWh)',
+                data: weeklyForecast.map(item => item.energy),
+                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            },
+        ],
+    };
+
     return (
         <>
             <Cabecalho />
             <div
                 className="min-h-screen flex flex-col items-center justify-between text-gray-800 p-6"
-
                 style={{
                     backgroundImage,
                     backgroundSize: "cover",
@@ -183,65 +180,32 @@ export default function WeatherApp() {
                         Consulta Climática
                     </h1>
 
-                    <form onSubmit={handleSearch} className="flex items-center mb-8">
-                        <input
-                            type="text"
-                            placeholder="Digite uma cidade..."
-                            value={search}
-                            onChange={handleInputChange}
-                            className="form-control w-full p-3 border border-teal-500 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all"
-                        />
-                        <button
-                            type="submit"
-                            className="btn p-3 bg-teal-600 text-white font-semibold rounded-r-lg hover:bg-teal-700 transition-all transform hover:scale-105"
-                        >
-                            Buscar
-                        </button>
-                    </form>
-
-                    {error && (
-                        <p className="text-red-600 text-center font-semibold mb-6">
-                            {error}
-                        </p>
-                    )}
-
                     <div className="text-center">
                         <div className="city text-2xl font-semibold mb-2 text-gray-800 drop-shadow-sm">
                             {city}
                         </div>
-                        <div className="date text-gray-600 mb-4 italic">{date}</div>
-
-                        <div className="container-img mb-4 flex justify-center">
-                            {icon && (
-                                <img
-                                    src={`https://openweathermap.org/img/wn/${icon}.png`}
-                                    alt="weather icon"
-                                    className="w-24 h-24 drop-shadow-lg animate-pulse"
-                                />
-                            )}
-                        </div>
-
-                        <div
-                            className="container-temp text-5xl font-extrabold mb-4 text-teal-700 cursor-pointer hover:scale-110 transition-transform"
-                            onClick={changeTemp}
-                        >
-                            <span>{temperature}</span>
-                            <span>{tempUnit}</span>
-                        </div>
-
                         <div className="weather text-lg font-medium text-gray-700 mb-2">
                             {weatherDescription}
                         </div>
-                        <div className="low-high text-gray-600 font-light">
-                            {lowHigh}
+                        <div className="container-temp text-5xl font-extrabold mb-4 text-teal-700">
+                            <span>{temperature}</span>°C
                         </div>
 
-                        {/* Exibição do consumo de energia */}
+                        <h2 className="text-2xl font-semibold text-teal-700 mb-4">Previsão Semanal de Energia</h2>
+                        <Line data={data} />
+
                         <div className="mt-8 bg-teal-50 p-6 rounded-lg shadow-inner">
                             <h2 className="text-2xl font-semibold text-teal-700 mb-4">Consumo de Energia Estimado</h2>
                             <p className="text-3xl font-bold text-teal-800">{energyGenerated} kWh</p>
-                            <p className="text-gray-600 mt-2">Baseado nas condições climáticas atuais.</p>
+                            <p className="text-gray-600 mt-2">Economia de CO₂: {co2Savings} kg</p>
                         </div>
+
+                        <button
+                            onClick={generatePDF}
+                            className="mt-6 bg-teal-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-teal-600 transition-transform transform hover:scale-105"
+                        >
+                            Gerar Relatório em PDF
+                        </button>
                     </div>
                 </div>
             </div>
