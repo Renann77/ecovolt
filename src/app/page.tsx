@@ -3,7 +3,6 @@ import AutomaticCalculations from './components/CalculationSection';
 import ChatbotSection from './components/ChatBotSection';
 import Footer from './components/Footer';
 import Cabecalho from './components/Header';
-import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import SolarEnergySection from './components/SolarEnergy';
 import SolarKits from './components/SolarKits';
