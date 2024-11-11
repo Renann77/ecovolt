@@ -8,7 +8,6 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-// URLs das imagens de fundo
 const sunnyBackground = "url('/img/fundoclima4.webp')";
 const rainyBackground = "url('/img/climafundo2.webp')";
 const clearBackground = "url('/img/climafundo1.webp')";
@@ -74,6 +73,29 @@ export default function WeatherApp() {
         }
     };
 
+    const searchResults = async (city: string) => {
+        try {
+            const response = await fetch(`${api.base}weather?q=${city}&lang=${api.lang}&units=${api.units}&APPID=${api.key}`);
+            if (!response.ok) throw new Error(`Erro HTTP: status ${response.status}`);
+            const data: WeatherData = await response.json();
+            displayResults(data);
+
+            const { lat, lon } = await fetchLatLon(city);
+            fetchWeeklyForecast(lat, lon);
+        } catch (error: any) {
+            alert(error.message);
+        }
+    };
+
+    const fetchLatLon = async (city: string) => {
+        const response = await fetch(`${api.base}weather?q=${city}&appid=${api.key}`);
+        const data = await response.json();
+        return {
+            lat: data.coord.lat,
+            lon: data.coord.lon,
+        };
+    };
+
     const fetchWeeklyForecast = async (lat: number, long: number) => {
         try {
             const response = await fetch(`${api.base}forecast?lat=${lat}&lon=${long}&lang=${api.lang}&units=${api.units}&APPID=${api.key}`);
@@ -119,7 +141,6 @@ export default function WeatherApp() {
         const dailyEnergy = calculateDailyEnergy(weather.main.temp, weather.clouds.all);
         setEnergyGenerated(dailyEnergy);
 
-        // Calcula economia de CO₂
         const co2PerKWh = 0.5;
         const co2SavingsValue = (dailyEnergy * co2PerKWh).toFixed(2);
         setCo2Savings(co2SavingsValue);
@@ -144,7 +165,6 @@ export default function WeatherApp() {
         doc.save("Relatorio_Clima_Energia_Semanal.pdf");
     };
 
-    // Determina o fundo com base na descrição do clima
     const backgroundImage = weatherDescription.includes("chuva") || weatherDescription.includes("chuvoso")
         ? rainyBackground
         : weatherDescription.includes("limpo")
@@ -163,6 +183,18 @@ export default function WeatherApp() {
         ],
     };
 
+    const handleSearch = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (search) {
+            searchResults(search);
+            setSearch("");
+        }
+    };
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value);
+    };
+
     return (
         <>
             <Cabecalho />
@@ -179,6 +211,22 @@ export default function WeatherApp() {
                     <h1 className="text-3xl font-extrabold text-center mb-8 text-teal-700 drop-shadow-md">
                         Consulta Climática
                     </h1>
+
+                    <form onSubmit={handleSearch} className="flex items-center mb-8">
+                        <input
+                            type="text"
+                            placeholder="Digite uma cidade..."
+                            value={search}
+                            onChange={handleInputChange}
+                            className="form-control w-full p-3 border border-teal-500 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all"
+                        />
+                        <button
+                            type="submit"
+                            className="btn p-3 bg-teal-600 text-white font-semibold rounded-r-lg hover:bg-teal-700 transition-all transform hover:scale-105"
+                        >
+                            Buscar
+                        </button>
+                    </form>
 
                     <div className="text-center">
                         <div className="city text-2xl font-semibold mb-2 text-gray-800 drop-shadow-sm">
