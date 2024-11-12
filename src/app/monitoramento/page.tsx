@@ -10,15 +10,7 @@ import jsPDF from 'jspdf';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
-const api = {
-    key: "64ed82577ced7f69cb1687f0ce536131", // OpenWeatherMap API Key
-    base: "https://api.openweathermap.org/data/2.5/",
-    lang: "pt_br",
-    units: "metric"
-};
-
-const googleMapsApiKey = "AIzaSyBkOTiygTyz8iro-ZSRd3Bi835SGlubvXg"; // Google Maps API Key
-
+// Types
 interface Highlight {
     icon: ReactElement;
     title: string;
@@ -30,9 +22,23 @@ interface WeatherData {
     clouds: { all: number };
 }
 
+interface Location {
+    lat: number;
+    lng: number;
+}
+
+const api = {
+    key: "64ed82577ced7f69cb1687f0ce536131",
+    base: "https://api.openweathermap.org/data/2.5/",
+    lang: "pt_br",
+    units: "metric"
+};
+
+const googleMapsApiKey = "AIzaSyBkOTiygTyz8iro-ZSRd3Bi835SGlubvXg";
+
 export default function PainelMonitoramento() {
     const [energyGenerated, setEnergyGenerated] = useState<number | null>(null);
-    const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number } | null>(null);
+    const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -54,7 +60,7 @@ export default function PainelMonitoramento() {
         },
     ];
 
-    const fetchWeatherData = async (lat: number, lon: number) => {
+    const fetchWeatherData = async (lat: number, lon: number): Promise<void> => {
         setLoading(true);
         try {
             const response = await fetch(`${api.base}weather?lat=${lat}&lon=${lon}&appid=${api.key}&units=${api.units}&lang=${api.lang}`);
@@ -70,11 +76,10 @@ export default function PainelMonitoramento() {
         setLoading(false);
     };
 
-    const calculateEnergy = (temperature: number, cloudiness: number) => {
+    const calculateEnergy = (temperature: number, cloudiness: number): number => {
         const sunlightIntensity = Math.max(0, (100 - cloudiness) / 100);
         const baseProduction = 5;
         const temperatureFactor = temperature > 20 ? 1.2 : 0.8;
-
         return baseProduction * sunlightIntensity * temperatureFactor;
     };
 
@@ -119,6 +124,20 @@ export default function PainelMonitoramento() {
         ],
     };
 
+    // Dados de projeção de energia por estação do ano
+    const seasonalEnergyData = {
+        labels: ["Verão", "Outono", "Inverno", "Primavera"],
+        datasets: [
+            {
+                label: "Projeção de Energia Armazenada (kWh)",
+                data: [600, 450, 300, 500],
+                backgroundColor: "rgba(75, 192, 192, 0.6)",
+                borderColor: "rgba(75, 192, 192, 1)",
+                borderWidth: 1,
+            },
+        ],
+    };
+
     return (
         <>
             <Cabecalho />
@@ -138,12 +157,8 @@ export default function PainelMonitoramento() {
                     ))}
                 </div>
 
-                {/* Mapa de Localização com Clique */}
                 <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-12">
                     <h2 className="text-3xl font-semibold text-teal-700 mb-6 text-center">Mapa de Localização</h2>
-                    <p className="text-center text-gray-600 mb-4">
-                        Clique no mapa para estimar a produção de energia solar em uma região específica.
-                    </p>
                     <LoadScript googleMapsApiKey={googleMapsApiKey}>
                         <GoogleMap
                             mapContainerStyle={{ width: '100%', height: '400px' }}
@@ -158,7 +173,6 @@ export default function PainelMonitoramento() {
                     </LoadScript>
                 </div>
 
-                {/* Exibição da Energia Gerada */}
                 {selectedLocation && (
                     <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-12 text-center">
                         <h2 className="text-3xl font-semibold text-teal-700 mb-6">Energia Gerada na Região Selecionada</h2>
@@ -173,28 +187,29 @@ export default function PainelMonitoramento() {
                     </div>
                 )}
 
-                {/* Gráfico de Consumo de Energia */}
                 <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-12">
                     <h2 className="text-3xl font-semibold text-teal-700 mb-6 text-center">Gráfico de Consumo de Energia</h2>
                     <Line data={energyData} />
                 </div>
 
-                {/* Gráfico de Temperatura */}
                 <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-12">
                     <h2 className="text-3xl font-semibold text-teal-700 mb-6 text-center">Temperatura e Desempenho</h2>
                     <Bar data={temperatureData} />
                 </div>
 
+                <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-12">
+                    <h2 className="text-3xl font-semibold text-teal-700 mb-6 text-center">Projeção de Energia Armazenada por Estação</h2>
+                    <Bar data={seasonalEnergyData} />
+                </div>
+
                 <div className="text-center">
                     <button
                         onClick={generatePDF}
-                        className="bg-teal-500 text-white py-3 px-8 rounded-lg font-semibold hover:bg-teal-600 transition-transform transform hover:scale-105 flex items-center justify-center gap-2"
+                        className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
                     >
-                        <FaFilePdf /> Exportar Relatório
+                        <FaFilePdf className="mr-2" /> Baixar Relatório PDF
                     </button>
                 </div>
-
-                {error && <p className="text-red-600 text-center mt-4">{error}</p>}
             </div>
             <Footer />
         </>
