@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { FaHome, FaSolarPanel, FaChartLine, FaMoneyBillWave } from 'react-icons/fa';
+import { FaHome, FaSolarPanel, FaChartLine, FaMoneyBillWave, FaInfoCircle } from 'react-icons/fa';
 import logo from '../../../public/img/logo.png';
 
 const Cabecalho = () => (
@@ -24,15 +24,11 @@ const Cabecalho = () => (
             <FaSolarPanel className="mr-2" /> Controle do Painel
           </Link>
         </li>
-
         <li>
           <Link href="/sobre" className="text-lg flex items-center text-white hover:text-green-300 transition-all duration-300">
-            <FaSolarPanel className="mr-2" /> Sobre Nós
+            <FaInfoCircle className="mr-2" /> Sobre Nós
           </Link>
         </li>
-
-
-
         <li>
           <Link href="/monitoramento" className="text-lg flex items-center text-white hover:text-green-300 transition-all duration-300">
             <FaChartLine className="mr-2" /> Monitoramento
