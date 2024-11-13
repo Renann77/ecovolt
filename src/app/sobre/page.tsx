@@ -20,16 +20,16 @@ export default function SobreProjeto() {
     const participants = [
         {
             name: "Renan Dorneles",
-            imageUrl: "/img/renan.jpg",
+            imageUrl: "/img/renan.png",
             rm: "RM557820",
-            linkedin: "https://www.linkedin.com/in/renan-dorneles-boucault-47b8652a5/",
-            github: "https://github.com/Renann77"
+            linkedin: "https://www.linkedin.com/in/renan-dorneles",
+            github: "https://github.com/renandorneles"
         },
         {
             name: "Igor Dias Barrocal",
             imageUrl: "/img/igor.jpg",
             rm: "RM555217",
-            linkedin: "https://www.linkedin.com/in/igor-dias-barrocal-b7a7a82ba",
+            linkedin: "https://www.linkedin.com/in/igor-dias-barrocal-b7a7a82ba?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app ",
             github: "https://github.com/igorbarrocal"
         },
         {
@@ -114,8 +114,13 @@ export default function SobreProjeto() {
                         </p>
                     </div>
 
-                    {/* Quem Somos? com Carrossel */}
+        
+                    
+                   
                     <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-10 space-y-8 text-gray-700 leading-relaxed mb-10">
+                       
+
+                        <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-10 space-y-8 text-gray-700 leading-relaxed mb-10">
                         <h1 className="text-2xl font-semibold text-teal-700 text-center">Quem Somos?</h1>
                         <p>
                             Somos estudantes de Análise e Desenvolvimento de Sistemas da FIAP. Estamos no projeto da Global Solution, onde nossa solução para energia limpa é resolver problemas enfrentados por usuários que possuem placas solares em suas residências.
@@ -125,29 +130,33 @@ export default function SobreProjeto() {
                         </p>
                     </div>
 
-                    <Slider {...settings}>
-                        {participants.map((participant, index) => (
-                            <div key={index} className="text-center p-4">
-                                <Image
-                                    src={participant.imageUrl}
-                                    alt={participant.name}
-                                    width={128} // largura da imagem
-                                    height={128} // altura da imagem
-                                    className="mx-auto w-32 h-32 rounded-full mb-4 object-cover shadow-lg"
-                                />
-                                <h2 className="text-xl font-semibold text-teal-700">{participant.name}</h2>
-                                <p className="text-gray-600">{participant.rm}</p>
-                                <div className="flex justify-center space-x-4 mt-4">
-                                    <a href={participant.linkedin} target="_blank" rel="noopener noreferrer">
-                                        <FaLinkedin className="text-blue-600 text-2xl hover:text-blue-800" />
-                                    </a>
-                                    <a href={participant.github} target="_blank" rel="noopener noreferrer">
-                                        <FaGithub className="text-gray-800 text-2xl hover:text-black" />
-                                    </a>
+
+
+
+                        <Slider {...settings}>
+                            {participants.map((participant, index) => (
+                                <div key={index} className="text-center p-4">
+                                    <img  // está com muitos erros ao colocar a Image do next.js 
+                                        src={participant.imageUrl}
+                                        alt={participant.name}
+                                        
+                                        className="mx-auto w-32 h-32 rounded-full mb-4 object-cover shadow-lg"
+                                    />
+                                    <h2 className="text-xl font-semibold text-teal-700">{participant.name}</h2>
+                                    <p className="text-gray-600">{participant.rm}</p>
+                                    <div className="flex justify-center space-x-4 mt-4">
+                                        <a href={participant.linkedin} target="_blank" rel="noopener noreferrer">
+                                            <FaLinkedin className="text-blue-600 text-2xl hover:text-blue-800" />
+                                        </a>
+                                        <a href={participant.github} target="_blank" rel="noopener noreferrer">
+                                            <FaGithub className="text-gray-800 text-2xl hover:text-black" />
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </Slider>
+                            ))}
+                        </Slider>
+                    </div>
+
                 </div>
             </div>
             <Footer />
