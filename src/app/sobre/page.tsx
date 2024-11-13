@@ -1,13 +1,14 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { GiSunflower } from 'react-icons/gi';
-import { FaLeaf, FaWater, FaSeedling, FaGlobeAmericas } from 'react-icons/fa';
+import { FaLeaf, FaWater, FaSeedling, FaGlobeAmericas } from 'react-icons/fa'; // icones 
 import Cabecalho from '../components/Header';
 import Footer from '../components/Footer';
 
 export default function SobreProjeto() {
     const [showContent, setShowContent] = useState(false);
 
+    // efeito de animação do icone de enregia
     useEffect(() => {
         const timer = setTimeout(() => setShowContent(true), 300);
         return () => clearTimeout(timer);
@@ -18,7 +19,7 @@ export default function SobreProjeto() {
             <Cabecalho />
             <div className="min-h-screen bg-gradient-to-b from-teal-50 to-teal-100 p-8 flex flex-col items-center justify-center transition-opacity duration-1000 ease-in-out">
 
-                {/* Título principal */}
+                
                 <div className={`transition-all duration-1000 transform ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
                     
 
@@ -87,6 +88,28 @@ export default function SobreProjeto() {
                         </p>
                     </div>
                 </div>
+
+                {/* Sobre a EcoVolt */}
+                <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-10 space-y-8 text-gray-700 leading-relaxed mb-10">
+                        <h1 className="text-2xl font-semibold text-teal-700 text-center">Quem Somos?</h1>
+                       
+                       <p>
+                        Somos estudantes de Análise e Desenvolvimento de Sistemas da FIAP.
+        
+                        Estamos no projeto da Global Solution, onde nossa solução para energia limpa, é solucionar um problema que encontramos para usuarios que possuem placas solares em suas residencias.
+
+                       </p>
+
+                       <p>
+                        E para os que não possuem conscientizamos para ajudar o meio ambiental, o foco é melhorar o meio ambiente e criar um mundo melhor para todos. 
+                       
+
+
+                       </p>
+                       
+                    </div>
+
+
             </div>
             <Footer />
         </>

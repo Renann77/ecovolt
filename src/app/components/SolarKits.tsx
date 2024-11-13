@@ -2,6 +2,7 @@ import casa1 from '../../../public/img/casa1.jpg';
 import casa2 from '../../../public/img/casa2.jpg';
 import casa3 from '../../../public/img/casa3.jpg';
 
+
 import Image from 'next/image';
 
 const benefits = [
@@ -40,7 +41,7 @@ export default function SolarBenefits() {
               <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
               <p className="text-gray-700 mb-4">{benefit.description}</p>
               <a
-                href="#"
+                href="/sobre"
                 className="text-green-600 hover:text-green-800 font-semibold"
               >
                 Saiba Mais →

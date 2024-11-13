@@ -12,12 +12,16 @@ const sunnyBackground = "url('/img/fundoclima4.webp')";
 const rainyBackground = "url('/img/climafundo2.webp')";
 const clearBackground = "url('/img/climafundo1.webp')";
 
+
+        // minha API de clima 
 const api = {
     key: "64ed82577ced7f69cb1687f0ce536131",
     base: "https://api.openweathermap.org/data/2.5/",
     lang: "pt_br",
     units: "metric"
 };
+
+        // Aqui estão alguns types seguindo as boas praticas
 
 interface WeatherData {
     name: string;
@@ -33,6 +37,8 @@ interface ForecastData {
     clouds: { all: number };
     weather: { description: string; icon: string }[];
 }
+
+                    // Aqui está a função que vai manipular a minha API externa de clima
 
 export default function WeatherApp() {
     const [city, setCity] = useState<string>("");
@@ -59,7 +65,7 @@ export default function WeatherApp() {
         function showError(error: GeolocationPositionError) {
             alert(`Erro: ${error.message}`);
         }
-    }, []);
+    }, []);   //funções de coordenadas e seus resultados, e chamada da API 
 
     const coordResults = async (lat: number, long: number) => {
         try {
@@ -72,6 +78,7 @@ export default function WeatherApp() {
             alert(error.message);
         }
     };
+                        // procura dos resultados
 
     const searchResults = async (city: string) => {
         try {
@@ -86,6 +93,7 @@ export default function WeatherApp() {
             alert(error.message);
         }
     };
+                // chamada da API referente ao descobrimento da latitute 
 
     const fetchLatLon = async (city: string) => {
         const response = await fetch(`${api.base}weather?q=${city}&appid=${api.key}`);
@@ -105,6 +113,7 @@ export default function WeatherApp() {
             console.error("Erro ao buscar previsão semanal:", error);
         }
     };
+
 
     const processWeeklyForecast = (forecast: ForecastData[]) => {
         const dailyEnergy: { [key: string]: number[] } = {};
@@ -146,6 +155,8 @@ export default function WeatherApp() {
         setCo2Savings(co2SavingsValue);
     };
 
+
+                    // aqui está a constante para gerar o relatorio em pdf para o usuario 
     const generatePDF = () => {
         const doc = new jsPDF();
         doc.setFontSize(20);
@@ -196,8 +207,9 @@ export default function WeatherApp() {
     };
 
     return (
+        // cabecalho fixo no começo do codigo e o footer fixo no final 
         <>
-            <Cabecalho />
+            <Cabecalho />       
             <div
                 className="min-h-screen flex flex-col items-center justify-between text-gray-800 p-6"
                 style={{
