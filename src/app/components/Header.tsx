@@ -11,9 +11,39 @@ const Cabecalho = () => (
       <h1 className="text-3xl font-extrabold hover:text-green-300 transition-colors duration-300">EcoVolt</h1>
     </div>
     
-    {/* Navegação posicionada abaixo da logo com espaçamento */}
-    <nav className="mt-4">
-      <ul className="flex space-x-8">
+    {/* Navegação responsiva */}
+    <nav className="mt-4 w-full">
+      {/* Navegação em dispositivos grandes */}
+      <ul className="hidden md:flex justify-center space-x-8">
+        <li>
+          <Link href="/" className="text-lg flex items-center text-white hover:text-green-300 transition-all duration-300">
+            <FaHome className="mr-2" /> Home
+          </Link>
+        </li>
+        <li>
+          <Link href="/controle-painel" className="text-lg flex items-center text-white hover:text-green-300 transition-all duration-300">
+            <FaSolarPanel className="mr-2" /> Controle do Painel
+          </Link>
+        </li>
+        <li>
+          <Link href="/sobre" className="text-lg flex items-center text-white hover:text-green-300 transition-all duration-300">
+            <FaInfoCircle className="mr-2" /> Sobre Nós
+          </Link>
+        </li>
+        <li>
+          <Link href="/monitoramento" className="text-lg flex items-center text-white hover:text-green-300 transition-all duration-300">
+            <FaChartLine className="mr-2" /> Monitoramento
+          </Link>
+        </li>
+        <li>
+          <Link href="/gastos" className="text-lg flex items-center text-white hover:text-green-300 transition-all duration-300">
+            <FaMoneyBillWave className="mr-2" /> Financeiro
+          </Link>
+        </li>
+      </ul>
+
+      {/* Navegação em dispositivos pequenos (hamburger menu) */}
+      <ul className="md:hidden flex flex-col space-y-4 items-center">
         <li>
           <Link href="/" className="text-lg flex items-center text-white hover:text-green-300 transition-all duration-300">
             <FaHome className="mr-2" /> Home
