@@ -1,7 +1,7 @@
 import casa1 from '../../../public/img/casa1.jpg';
 import casa2 from '../../../public/img/casa2.jpg';
 import casa3 from '../../../public/img/casa3.jpg';
-
+import Link from 'next/link';
 
 import Image from 'next/image';
 
@@ -40,12 +40,13 @@ export default function SolarBenefits() {
             <div className="p-6">
               <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
               <p className="text-gray-700 mb-4">{benefit.description}</p>
-              <a
-                href="/sobre"
-                className="text-green-600 hover:text-green-800 font-semibold"
-              >
-                Saiba Mais →
-              </a>
+              <ul>
+                <li>
+                  <Link href="/sobre" className="text-green-600 hover:text-green-800 font-semibold">
+              Saiba Mais!
+              </Link>
+              </li>
+              </ul>
             </div>
           </div>
         ))}
