@@ -15,7 +15,7 @@ const ChatbotSection = () => (
       </p>
       <ul>
         <li>
-          <Link href="/chatbot" className="inline-block px-6 py-3 mt-4 bg-yellow-400 text-white font-medium rounded-md shadow hover:bg-yellow-500 transition duration-200 transform hover:scale-105">
+          <Link href="/ChatBot" className="inline-block px-6 py-3 mt-4 bg-yellow-400 text-white font-medium rounded-md shadow hover:bg-yellow-500 transition duration-200 transform hover:scale-105">
             CHATBOT
           </Link>
         </li>

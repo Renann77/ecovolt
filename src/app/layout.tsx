@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body>
-        <title> <img src="public/img/logo.png"  /> EcoVoltApp </title>
+        <title>  EcoVoltApp </title>
 
         {children}
 
