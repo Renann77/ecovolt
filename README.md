@@ -1,3 +1,6 @@
+npm install--force
+
+
 EcoVolt: Monitoramento e Otimização de Energia Solar para um Futuro Sustentável 🌞🌍
 Descrição do Projeto
 O EcoVolt é uma solução de software inovadora desenvolvida como parte do desafio Global Solution 2024 da FIAP, cujo tema é "Energia para um Futuro Sustentável". Nosso projeto visa fornecer um monitoramento eficiente e uma análise aprofundada da geração e consumo de energia solar, possibilitando uma gestão sustentável e otimizada para indivíduos e empresas que utilizam sistemas de energia solar. Com a EcoVolt, buscamos contribuir para a transição energética e promover a sustentabilidade, ajudando os usuários a reduzir sua pegada de carbono, gerenciar seus custos energéticos e tomar decisões informadas sobre o uso de energia limpa.
