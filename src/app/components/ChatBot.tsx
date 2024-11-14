@@ -5,7 +5,6 @@ import chatData from '../../../typebot-export-chatbot-de-duvidas-xg1hitj (2).jso
 import Link from 'next/link'; // Importando o Link do Next.js
 
 // Tipos para o fluxo de dados (mesmos tipos que já estão definidos)
-
 interface RichTextItem {
   type: 'p';
   children: { text: string }[];
@@ -157,15 +156,15 @@ const ChatBotComponent: React.FC = () => {
   };
 
   const renderGroup = () => {
-    if (!currentGroupId) return <div>Carregando próximo conteúdo...</div>;
+    if (!currentGroupId) return <div className="animate-pulse text-center text-gray-500">Carregando...</div>;
 
     const group = getGroup(currentGroupId);
-    if (!group) return <div>Carregando próximo conteúdo...</div>;
+    if (!group) return <div className="animate-pulse text-center text-gray-500">Carregando...</div>;
 
     return group.blocks.map((block, index) => {
       if (block.type === 'text') {
         return (
-          <p key={index} className="bg-gray-100 p-4 rounded-lg shadow-md mb-4 text-gray-800">
+          <p key={index} className="bg-teal-600 p-4 rounded-lg shadow-lg text-white mb-4 transition-all transform hover:scale-105">
             {block.content.richText.map(r => r.children[0].text).join(' ')}
           </p>
         );
@@ -178,7 +177,7 @@ const ChatBotComponent: React.FC = () => {
               <button
                 key={item.id}
                 onClick={() => handleChoice(item)}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+                className="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all transform hover:scale-105"
               >
                 {item.content}
               </button>
@@ -195,11 +194,11 @@ const ChatBotComponent: React.FC = () => {
               placeholder={block.options?.labels?.placeholder || 'Digite aqui'}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg mb-2"
+              className="w-full p-2 border border-teal-300 rounded-lg mb-2 focus:ring-teal-500 transition-all"
             />
             <button
               onClick={() => handleTextInputSubmit(block.options.variableId)}
-              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+              className="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all transform hover:scale-105"
             >
               Enviar
             </button>
@@ -215,11 +214,11 @@ const ChatBotComponent: React.FC = () => {
               placeholder="Digite seu email"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg mb-2"
+              className="w-full p-2 border border-teal-300 rounded-lg mb-2 focus:ring-teal-500 transition-all"
             />
             <button
               onClick={() => handleEmailInputSubmit(block.options.variableId)}
-              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md"
+              className="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all transform hover:scale-105"
             >
               Enviar
             </button>
@@ -245,16 +244,16 @@ const ChatBotComponent: React.FC = () => {
   }, [currentGroupId]);
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Chatbot de Dúvidas</h2>
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg animate-fadeIn">
+      <h2 className="text-3xl font-bold mb-6 text-center text-teal-600">Chatbot de Dúvidas</h2>
       {isLoading ? (
-        <div className="text-center text-gray-500">Carregando...</div>
+        <div className="text-center text-teal-600 animate-pulse">Carregando...</div>
       ) : (
         <div>{renderGroup()}</div>
       )}
       {/* Link para redirecionamento para a home após a conversa */}
-      <div className="mt-4 text-center">
-        <Link href="/" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">
+      <div className="mt-6 text-center">
+        <Link href="/" className="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all transform hover:scale-105">
           Voltar para a Página Inicial
         </Link>
       </div>

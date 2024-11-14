@@ -25,23 +25,7 @@ export default function Footer() {
             </div>
           </div>
   
-          {/* Links de navegação */}
-          <nav className="mb-4">
-            <ul className="flex justify-center space-x-4">
-              <li>
-                <a href="#" className="hover:text-green-300 transition-colors">Home</a>
-              </li>
-              <li>
-                <a href="#kits-solares" className="hover:text-green-300 transition-colors">Kits Solares</a>
-              </li>
-              <li>
-                <a href="#calculations" className="hover:text-green-300 transition-colors">Cálculos Automáticos</a>
-              </li>
-              <li>
-                <a href="#contact" className="hover:text-green-300 transition-colors">Contato</a>
-              </li>
-            </ul>
-          </nav>
+          
   
           {/* Direitos autorais */}
           <p className="text-sm text-gray-300">&copy; 2024 EcoVolt. Todos os direitos reservados.</p>
