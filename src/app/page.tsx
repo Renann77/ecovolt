@@ -40,7 +40,7 @@ const Home = () => (
     </section>
 
 
-  <section className='secao'>
+  <section >
   
     <SolarKits/>
 
