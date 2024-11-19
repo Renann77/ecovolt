@@ -1,3 +1,5 @@
+// Login
+
 
 export interface LoginProps {
     email: string;
@@ -7,3 +9,34 @@ export interface LoginProps {
 export interface LoginFormProps {
     onLogin: (data: LoginProps) => void; 
 }
+
+
+
+
+// Cadastro
+
+
+export interface User {
+    id: string; 
+    nome: string; 
+    email: string; 
+  }
+  
+  
+  export interface FormData {
+    id: string; 
+    nome: string; 
+    email: string; 
+  }
+  
+ 
+  export interface ApiResponse {
+    data: User[]; 
+    status: number; 
+  }
+  
+  
+  export interface CadastroProps {
+    apiUrl: string; 
+  }
+  
