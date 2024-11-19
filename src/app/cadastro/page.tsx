@@ -2,49 +2,56 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation"; // Para redirecionar
+import { ClienteType } from "../../types";
 import Cabecalho from "../components/Header";
 import Footer from "../components/Footer";
 import logo from "../../../public/img/logo.png";
 
 export default function CadastroPage() {
-  const [formData, setFormData] = useState({
-    nome: "",
+  const navigate = useRouter();
+
+  const [cliente, setCliente] = useState<ClienteType>({
+    idCadastro: 0,
     email: "",
     senha: "",
   });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCliente({ ...cliente, [name]: value });
+  };
+
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const router = useRouter(); // Hook para navegação
-
-  const API_URL = "http://localhost:8080/api/usuarios"; // URL da API
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const cabecalho = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cliente),
+  };
     try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro ao cadastrar usuário.");
-      }
-
-      setFormData({ nome: "", email: "", senha: "" });
-      setSuccessMessage("Usuário cadastrado com sucesso!");
-      setErrorMessage("");
-    } catch (error) {
-      setErrorMessage("Erro ao cadastrar usuário. Tente novamente.");
-      setSuccessMessage("");
+      const response = await fetch(
+        "http://localhost:8080/cadastro",
+        cabecalho
+    );
+    console.log(response);
+      if (response.ok) {
+        alert(`${cliente.email} cadastrado com sucesso!`);
+        setCliente({
+          idCadastro: 0,
+          email: "",
+          senha: ""
+        });
+        navigate.push("/");
+    } else {
+        alert("Erro ao cadastrar!");
     }
+  } catch (erro) {
+    console.log("Erro ao cadastrar cliente: ", erro);
+  }
   };
 
   return (
@@ -78,8 +85,8 @@ export default function CadastroPage() {
                 type="email"
                 id="email"
                 name="email"
-                value={formData.email}
-                onChange={handleInputChange}
+                value={cliente.email}
+                onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-teal-300 text-black"
                 placeholder="Digite seu email"
                 required
@@ -98,8 +105,8 @@ export default function CadastroPage() {
                 type="password"
                 id="senha"
                 name="senha"
-                value={formData.senha}
-                onChange={handleInputChange}
+                value={cliente.senha}
+                onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-teal-300 text-black"
                 placeholder="Digite sua senha"
                 required
