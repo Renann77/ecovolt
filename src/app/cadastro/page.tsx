@@ -45,19 +45,19 @@ export default function CadastroPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-teal-50 to-teal-100">
       <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
-        {/* Logo */}
+       
         <div className="flex justify-center mb-6">
           <Image src={logo} alt="EcoVolt Logo" width={100} height={100} />
         </div>
 
-        {/* Título */}
+      
         <h1 className="text-3xl font-bold text-teal-700 text-center mb-6">
           Cadastro de Usuário
         </h1>
 
-        {/* Formulário */}
+       
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Campo Nome */}
+         
           <div>
             <label
               htmlFor="nome"
@@ -77,7 +77,7 @@ export default function CadastroPage() {
             />
           </div>
 
-          {/* Campo Email */}
+          
           <div>
             <label
               htmlFor="email"
@@ -97,7 +97,7 @@ export default function CadastroPage() {
             />
           </div>
 
-          {/* Botão de Cadastro */}
+       
           <button
             type="submit"
             className="w-full bg-teal-600 text-white font-bold py-2 rounded-md shadow hover:bg-teal-700 transition-all"
@@ -106,7 +106,7 @@ export default function CadastroPage() {
           </button>
         </form>
 
-        {/* Mensagens de Feedback */}
+        
         {successMessage && (
           <p className="mt-4 text-center text-green-600 font-medium">
             {successMessage}
