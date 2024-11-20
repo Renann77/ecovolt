@@ -29,31 +29,3 @@ export interface User {
     email: string; 
   }
   
- 
-  export interface ApiResponse {
-    data: User[]; 
-    status: number; 
-  }
-  
-  
-  export interface CadastroProps {
-    apiUrl: string; 
-  }
-  
-
-
-
-
-  // pagina de gastos, manipulação dos comentarios dos clientes.
-export interface Comment {
-  id: string;
-  author: string;
-  content: string;
-  rating: number; 
-}
-
-export interface FormCommentData {
-  author: string;
-  content: string;
-  rating: number;
-}
