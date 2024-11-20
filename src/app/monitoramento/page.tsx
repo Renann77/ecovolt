@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, ReactElement } from 'react';
+import {  useState, ReactElement } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import Cabecalho from '../components/Header';
 import Footer from '../components/Footer';

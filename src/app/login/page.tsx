@@ -60,7 +60,7 @@ export default function Login() {
         }
     };
     
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [errorMessage, ] = useState<string | null>(null);
     const router = useRouter();
 
     return (

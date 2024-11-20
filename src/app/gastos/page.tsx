@@ -41,7 +41,7 @@ const financialData = [
 ];
 
 export default function FinancialPage() {
-    const [selectedPanel, setSelectedPanel] = useState(financialData[0]);
+    const [, setSelectedPanel] = useState(financialData[0]);
     const [monthlyConsumption, setMonthlyConsumption] = useState(0);
     const [estimatedSavings, setEstimatedSavings] = useState<number | null>(null);
     const [comments, setComments] = useState<{ name: string; stars: number; message: string }[]>([]);

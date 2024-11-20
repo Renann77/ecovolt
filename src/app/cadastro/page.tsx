@@ -21,8 +21,8 @@ export default function CadastroPage() {
     setCliente({ ...cliente, [name]: value });
   };
 
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage ] = useState("");
+  const [errorMessage] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
