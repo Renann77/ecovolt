@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // Para redirecionar
+import { useRouter } from "next/navigation";
 import { ClienteType } from "../../types";
 import Cabecalho from "../components/Header";
 import Footer from "../components/Footer";
@@ -31,28 +31,30 @@ export default function CadastroPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cliente),
-  };
+    };
+  
     try {
-      const response = await fetch(
-        "http://localhost:8080/cadastro",
-        cabecalho
-    );
-    console.log(response);
+      const response = await fetch("http://localhost:8080/cadastro", cabecalho);
+  
       if (response.ok) {
         alert(`${cliente.email} cadastrado com sucesso!`);
         setCliente({
           idCadastro: 0,
           email: "",
-          senha: ""
+          senha: "",
         });
         navigate.push("/");
-    } else {
+      } else if (response.status === 409) {
+        alert("Já existe uma conta cadastrada com esse e-mail!");
+        navigate.push("/login");
+      } else {
         alert("Erro ao cadastrar!");
+      }
+    } catch (erro) {
+      console.log("Erro ao cadastrar cliente: ", erro);
     }
-  } catch (erro) {
-    console.log("Erro ao cadastrar cliente: ", erro);
-  }
   };
+  
 
   return (
     <>

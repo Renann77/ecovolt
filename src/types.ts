@@ -17,19 +17,16 @@ export interface User {
     email: string; 
   }
   
-  
   export interface FormData {
     id: string; 
     nome: string; 
     email: string; 
   }
   
- 
   export interface ApiResponse {
     data: User[]; 
     status: number; 
   }
-  
   
   export interface CadastroProps {
     apiUrl: string; 
