@@ -22,12 +22,3 @@ export interface User {
     nome: string; 
     email: string; 
   }
-  
-  export interface ApiResponse {
-    data: User[]; 
-    status: number; 
-  }
-  
-  export interface CadastroProps {
-    apiUrl: string; 
-  }
