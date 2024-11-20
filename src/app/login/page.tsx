@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, FormEvent, ChangeEvent } from "react";
+import { LoginType } from "../../types";
+import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import logo from "../../../public/img/logo.png";
@@ -8,52 +9,59 @@ import Cabecalho from "../components/Header";
 import Footer from "../components/Footer";
 
 export default function Login() {
-    const [formData, setFormData] = useState({
+    const navigate = useRouter();
+
+    const [dados, setDados] = useState<LoginType>({
         email: "",
-        password: "",
+        senha: "",
     });
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const router = useRouter();
 
-    const API_URL = "http://localhost:8080/api/login"; // API REST em Java
-
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
+        setDados({
+            ...dados,
             [name]: value,
         });
     };
 
-    const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setErrorMessage(null);
-
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         try {
-            const response = await fetch(API_URL, {
-                method: "POST",
+            const response = await fetch(`http://localhost:8080/cadastro/login/${dados.email}/${dados.senha}`, {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    email: dados.email,
+                    senha: dados.senha,
+                }),
             });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                setErrorMessage(errorData.message || "Erro ao fazer login.");
-                return;
+    
+            if (response.ok) {
+                const usuario = await response.json();
+                setDados(usuario);
+                navigate.push(`/sobre`);
+            } else {
+                const errorText = await response.text();
+                console.error(`Erro ao fazer login: ${response.status} - ${errorText}`);
+                if (response.status === 400 || response.status === 404) {
+                    alert("Email ou Senha Inválidos!");
+                    navigate.push("/login");
+                } else {
+                    alert(`ERRO AO FAZER O LOGIN! Tente novamente. Erro: ${errorText}`);
+                    navigate.push("/login");
+                }
             }
-
-            const data = await response.json();
-            console.log("Usuário autenticado:", data);
-
-            // Redirecionar para o painel ou home após login
-            router.push("/painel");
         } catch (error) {
-            console.error("Erro durante o login:", error);
-            setErrorMessage("Erro ao conectar com o servidor.");
+            console.error(`Erro ao fazer login: ${error}`);
+            alert(`Erro ao fazer o login: ${error}`);
+            navigate.push("/login");
         }
     };
+    
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const router = useRouter();
 
     return (
         <>
@@ -75,21 +83,18 @@ export default function Login() {
                     </div>
 
                     {/* Formulário de Login */}
-                    <form onSubmit={handleLogin} className="space-y-6">
+                    <form onSubmit={(e) => handleSubmit(e)} className="space-y-6">
                         {/* Campo de E-mail */}
                         <div>
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-gray-700"
-                            >
+                            <label htmlFor="idEmail" className="block text-sm font-medium text-gray-700">
                                 E-mail
                             </label>
                             <input
                                 type="email"
-                                id="email"
                                 name="email"
-                                value={formData.email}
-                                onChange={handleInputChange}
+                                id="idEmail"
+                                onChange={(e) => handleChange(e)}
+                                value={dados.email}
                                 required
                                 className="mt-2 block w-full px-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 sm:text-sm text-black"
                                 placeholder="Digite seu e-mail"
@@ -98,18 +103,15 @@ export default function Login() {
 
                         {/* Campo de Senha */}
                         <div>
-                            <label
-                                htmlFor="password"
-                                className="block text-sm font-medium text-gray-700"
-                            >
+                            <label htmlFor="idSenha" className="block text-sm font-medium text-gray-700">
                                 Senha
                             </label>
                             <input
                                 type="password"
-                                id="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleInputChange}
+                                name="senha"
+                                id="idSenha"
+                                onChange={(e) => handleChange(e)}
+                                value={dados.senha}
                                 required
                                 className="mt-2 block w-full px-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 sm:text-sm text-black"
                                 placeholder="Digite sua senha"
@@ -124,7 +126,6 @@ export default function Login() {
                             Entrar
                         </button>
                     </form>
-
                     {/* Mensagem de Erro */}
                     {errorMessage && (
                         <div className="mt-4 text-center text-red-600 font-semibold">

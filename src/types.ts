@@ -1,20 +1,15 @@
 // Login
-
-
-export interface LoginProps {
-    email: string;
-    password: string;
+export type LoginType = {
+	email: string,
+	senha: string,
 }
-
-export interface LoginFormProps {
-    onLogin: (data: LoginProps) => void; 
-}
-
-
-
 
 // Cadastro
-
+export type ClienteType = {
+	idCadastro: number,
+	email: string,
+	senha: string
+}
 
 export interface User {
     id: string; 
@@ -22,10 +17,8 @@ export interface User {
     email: string; 
   }
   
-  
   export interface FormData {
     id: string; 
     nome: string; 
     email: string; 
   }
-  
