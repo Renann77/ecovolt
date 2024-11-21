@@ -1,4 +1,10 @@
-npm install--force
+Link do repositório: https://github.com/Renann77/ecovolt.git
+
+
+Link do deploy no vercel: https://ecovolt-fiap.vercel.app
+
+
+Video pitch: https://youtu.be/bo9TGYJ2PvQ
 
 
 EcoVolt: Monitoramento e Otimização de Energia Solar para um Futuro Sustentável 🌞🌍
