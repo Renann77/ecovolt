@@ -8,6 +8,7 @@ import logo from "../../../public/img/logo.png";
 import Cabecalho from "../components/Header";
 import Footer from "../components/Footer";
 
+
 export default function Login() {
     const navigate = useRouter();
 
@@ -41,7 +42,7 @@ export default function Login() {
             if (response.ok) {
                 const usuario = await response.json();
                 setDados(usuario);
-                navigate.push(`/sobre`);
+                navigate.push(`/dashboard`);
             } else {
                 const errorText = await response.text();
                 console.error(`Erro ao fazer login: ${response.status} - ${errorText}`);
@@ -141,6 +142,7 @@ export default function Login() {
                         >
                             Voltar ao Menu
                         </button>
+                  
                         <p className="mt-2 text-sm text-gray-600">
                             Não tem uma conta?{" "}
                             <a

@@ -39,6 +39,11 @@ const Cabecalho = () => (
           <Link href="/gastos" className="text-lg flex items-center text-white hover:text-green-300 transition-all duration-300">
             <FaMoneyBillWave className="mr-2" /> Financeiro
           </Link>
+          <li>
+          <Link href="/dashboard" className="text-lg flex items-center text-white hover:text-green-300 transition-all duration-300">
+            <FaMoneyBillWave className="mr-2" /> dashj
+          </Link>
+        </li>
         </li>
       </ul>
 
