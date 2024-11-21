@@ -47,7 +47,7 @@ export default function Dashboard() {
                                 </button>
                             </div>
                             <div
-                                onClick={() => router.push("/financeiro")}
+                                onClick={() => router.push("/gastos")}
                                 className="cursor-pointer bg-white shadow-md rounded-lg p-6 text-center transition-transform transform hover:scale-105 hover:shadow-2xl"
                             >
                                 <h2 className="text-2xl font-semibold text-teal-700">Financeiro</h2>
