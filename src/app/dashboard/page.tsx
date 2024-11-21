@@ -16,65 +16,12 @@ export default function Dashboard() {
     const [isEditing, setIsEditing] = useState(false);
     const [newName, setNewName] = useState("");
 
-    // URL da API para buscar informações do usuário
-    const API_URL = "http://localhost:8080/api/usuarios/me";
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await fetch(API_URL, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include", 
-                });
-
-                if (!response.ok) {
-                    throw new Error("Erro ao buscar informações do usuário.");
-                }
-
-                const userData = await response.json();
-                setUser(userData);
-                setNewName(userData.nome);
-            } catch (error) {
-                setError("Não foi possível carregar as informações do usuário.");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchUser();
-    }, []);
-
-    const handleEditName = async () => {
-        try {
-            const response = await fetch(`${API_URL}/edit`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ nome: newName }),
-            });
-
-            if (!response.ok) {
-                throw new Error("Erro ao atualizar o nome do usuário.");
-            }
-
-            const updatedUser = await response.json();
-            setUser(updatedUser);
-            setIsEditing(false);
-        } catch (error) {
-            setError("Erro ao atualizar o nome. Tente novamente.");
-        }
-    };
-
     return (
         <>
             <Cabecalho />
             <div className="min-h-screen bg-gradient-to-b from-teal-50 to-teal-100 p-8">
                 <h1 className="text-4xl font-bold text-teal-700 text-center mb-6">
-                    Bem-vindo(a), {isLoading ? "Carregando..." : user.nome || "Usuário"}!
+                    Bem-vindo(a)!
                 </h1>
 
                 {error ? (
@@ -150,7 +97,6 @@ export default function Dashboard() {
                                                 Cancelar
                                             </button>
                                             <button
-                                                onClick={handleEditName}
                                                 className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-all"
                                             >
                                                 Salvar
